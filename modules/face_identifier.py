@@ -1,6 +1,7 @@
 import cv2
 import os
 import re
+import sys
 import time
 import datetime
 import numpy as np
@@ -30,7 +31,7 @@ def encode_face(tuple_data=None):
         # for line in read_file():
         for row in tuple_data:
             IMG_BLOB = row[2]
-            img = convert_binary_to_img(IMG_BLOB, f'../pythonProject/data/test{row[0]}.jpg')
+            img = convert_binary_to_img(IMG_BLOB, f'{sys.path[1]}/data/test{row[0]}.jpg')
             input_image = fr.load_image_file(img)
             image_face_encoding = fr.face_encodings(input_image)[0]
             known_face_encoding = [image_face_encoding]
@@ -96,6 +97,6 @@ def update_valid_till_for_expired():
         print(err)
 
 
-def capture_unknown_face_img(frame, filepath='../pythonProject/captured/'):
+def capture_unknown_face_img(frame, filepath=f'{sys.path[1]}/captured/'):
     file_name = re.sub("[^\w]", "_", datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
     cv2.imwrite(f"{filepath}NewPicture_{file_name}.jpg", frame)

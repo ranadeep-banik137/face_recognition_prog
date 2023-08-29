@@ -98,26 +98,28 @@ if __name__ == '__main__':
         encoded = test.encode('ISO-8859-1')
         #Testing if encoding works
         #convert_binary_to_img(encoded, f'data/test{node["userID"]}.jpg')
-    print(json_body)
+    #print(json_body)
     #run_app()
     #get_available_image(comma_separated_val[0])
+    print(sys.path[1])
     for line in read_file():
         if 'id,name' in line:
             continue
         comma_separated_val = line.split(",")
-        insert_table_data(int(comma_separated_val[0]), convertToBinaryData(f'img/{comma_separated_val[0]}.png'), comma_separated_val[1])
+        insert_table_data(int(comma_separated_val[0]), convertToBinaryData(f'{sys.path[1]}/img/{comma_separated_val[0]}.png'), comma_separated_val[1])
     db_to_json = export_db_to_json('users')
     #for node in db_to_json:
         #test = node['userImg']
         #encoded = test.encode('ISO-8859-1')
         # Testing if encoding works
-        #convert_binary_to_img(encoded, f'../pythonProject/data/test{node["userID"]}.jpg')
+        #convert_binary_to_img(encoded, f'{sys.path[1]}/data/test{node["userID"]}.jpg')
+    print(sys.path[1])
     for row in fetch_table_data_in_tuples():
-        #convert_binary_to_img(row[2], f'data/{row[0]}.jpg')
+        #convert_binary_to_img(row[2], f'{sys.path[1]}/data/{row[0]}.jpg')
         IMG_BLOB = row[2]
         decoded = IMG_BLOB.decode('ISO-8859-1')
         #Testing if encoding works
-        convert_binary_to_img(decoded.encode('ISO-8859-1'), f'../pythonProject/data/test{row[0]}.jpg')
+        convert_binary_to_img(decoded.encode('ISO-8859-1'), f'{sys.path[1]}/data/test{row[0]}.jpg')
     ROOT_DIR = os.path.abspath(os.curdir)
     print(ROOT_DIR)
     test = convert_into_epoch('2023-08-28 21:28:35')

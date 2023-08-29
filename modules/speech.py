@@ -1,4 +1,5 @@
 import os
+import sys
 from gtts import gTTS
 from playsound import playsound
 from modules.database import fetch_table_data_in_tuples, populate_identification_record
@@ -22,19 +23,19 @@ def play_speech(input=''):
         obj = gTTS(text=text_val, lang=language, slow=False)
 
         # Here we are saving the transformed audio in a mp3 file
-        obj.save("C:/Users/ranad/PycharmProjects/pythonProject/data/google_speech.mp3")
+        obj.save(f"{sys.path[1]}/data/google_speech.mp3")
 
         # Play the exam.mp3 file
         try:
             if not is_user_already_identified(input):
                 print(f'Playing audio for {input}' if input != "Unknown Face" else '')
-                playsound("../pythonProject/data/google_speech.mp3")
+                playsound(f"{sys.path[1]}/data/google_speech.mp3")
         except Exception as err:
             error = err
             # print(err)
         finally:
             #time.sleep(1)
-            os.remove('../pythonProject/data/google_speech.mp3')
+            os.remove(f'{sys.path[1]}/data/google_speech.mp3')
             return True if input != 'Unknown Face' else False
 
 
