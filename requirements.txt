@@ -8,3 +8,4 @@ xlsxwriter~=3.1.2
 excel2json-3
 pandas~=2.0.3
 numpy~=1.25.2
+pydub~=0.25.1

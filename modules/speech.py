@@ -1,5 +1,7 @@
 import os
-import sys
+import re
+import datetime
+import time
 from gtts import gTTS
 from playsound import playsound
 from modules.database import fetch_table_data_in_tuples, populate_identification_record
@@ -15,28 +17,27 @@ def play_speech(input=''):
         print(f'User identified as {input}' if input != "Unknown Face" else '')
         # Here are converting in English Language
         language = 'en'
-
+        speech_file_name = input.split(' ')[0] + '_' + re.sub("[^\w]", "_", datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"))
         # Passing the text and language to the engine,
         # here we have assign slow=False. Which denotes
         # the module that the transformed audio should
         # have a high speed
         obj = gTTS(text=text_val, lang=language, slow=False)
 
-        # Here we are saving the transformed audio in a mp3 file
-        obj.save(f"{sys.path[1]}/data/google_speech.mp3")
+        if not is_user_already_identified(input):
+            print(f'Playing audio for {input}' if input != "Unknown Face" else '')
 
-        # Play the exam.mp3 file
-        try:
-            if not is_user_already_identified(input):
-                print(f'Playing audio for {input}' if input != "Unknown Face" else '')
-                playsound(f"{sys.path[1]}/data/google_speech.mp3")
-        except Exception as err:
-            error = err
-            # print(err)
-        finally:
-            #time.sleep(1)
-            os.remove(f'{sys.path[1]}/data/google_speech.mp3')
-            return True if input != 'Unknown Face' else False
+            # Here we are saving the transformed audio in a mp3 file
+            obj.save(f"{os.getenv('PROJECT_PATH') or ''}data/{speech_file_name}.mp3")
+            try:
+                # Play the exam.mp3 file
+                playsound(f"{os.getenv('PROJECT_PATH') or ''}data/{speech_file_name}.mp3")
+            except Exception as err:
+                error = err
+                print(err)
+            finally:
+                os.remove(f'{os.getenv("PROJECT_PATH") or ""}data/{speech_file_name}.mp3')
+                return True if input != 'Unknown Face' else False
 
 
 def is_user_already_identified(name):

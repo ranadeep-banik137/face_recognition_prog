@@ -90,10 +90,6 @@ def populate_identification_record(userID, time, is_identified, valid_till):
 # Call the create table method
 def insert_table_data(id, blob, name):
 	populate_users(id, blob, name)
-    # Prepare sample data, of images, from local drive
-    # write_blob(1, convertToBinaryData("img/1.png"), "Ranadeep Banik")
-    # write_blob(2, convertToBinaryData("img/2.png"), "Anwesha Bhattacharjee")
-    # write_blob(3, convertToBinaryData("img/3.png"), "Deepjoy Banik")
 
 
 def fetch_table_data_in_tuples(name='', query=None):
