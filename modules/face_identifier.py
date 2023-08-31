@@ -11,6 +11,7 @@ from modules.database import fetch_table_data_in_tuples, populate_identification
 from modules.data_reader import convert_binary_to_img, remove_file
 from constants.db_constansts import query_data, update_data, Tables
 from modules.date_time_converter import convert_into_epoch
+from DeepImageSearch import Load_Data,Search_Setup
 
 
 def encode_face(tuple_data=None):
@@ -64,6 +65,7 @@ def encode_face(tuple_data=None):
             remove_file(img)
             if identified:
                 break
+        delete_similar_images(f'{os.getenv("PROJECT_PATH") or ""}captured/')
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         #play_speech(name)
@@ -101,4 +103,24 @@ def update_valid_till_for_expired():
 def capture_unknown_face_img(frame, filepath=f'{os.getenv("PROJECT_PATH") or ""}captured/'):
     file_name = re.sub("[^\w]", "_", datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
     cv2.imwrite(f"{filepath}NewPicture_{file_name}.jpg", frame)
-    logging.info(f'Not identified person has been shot and saved as {file_name}.jpg')
+    logging.info(f"unidentified person's screen shot has been saved as NewPicture_{file_name}.jpg")
+
+
+def delete_similar_images(filepath):
+    image_list = Load_Data().from_folder(folder_list=[filepath])
+
+    for index in range(len(image_list) - 1):
+        img1 = cv2.imread(image_list[index])
+        img2 = cv2.imread(image_list[index + 1])
+
+        # convert the images to grayscale
+        img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+        h, w = img1.shape
+        diff = cv2.subtract(img1, img2)
+        err = np.sum(diff**2)
+        mse = err/(float(h*w))
+        if int(mse) < (int(os.getenv('IMG_SIMILARITY_PERCENT_FOR_DELETE')) if os.getenv('IMG_SIMILARITY_PERCENT_FOR_DELETE') is not None else 30):
+            logging.debug(f'Deleting img : {image_list[index]}')
+            os.remove(image_list[index])

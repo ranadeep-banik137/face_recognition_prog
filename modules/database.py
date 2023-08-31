@@ -1,6 +1,8 @@
 import os
+import logging
 import mysql.connector as connector
 from constants.db_constansts import insert_table_queries, create_table_queries, misc_queries
+
 
 # Connect to the database
 # using the psycopg2 adapter.
@@ -11,7 +13,7 @@ def create_connection():
 	user = os.getenv('DB_USER') or 'ranadeep'
 	password = os.getenv('DB_PASSWORD') or 'rana#123'
 	db = os.getenv('DB_NAME') or 'profiles'
-
+	logging.debug(f'Database connection created with host : {host}, user : {user}, password : {password}, database name : {db}')
 	conn = connector.connect(host=host,
 							 user=user,
 							 passwd=password,
@@ -30,8 +32,7 @@ def create_table(creation_query):
 			curr.execute(creation_query)
 
 		except Exception as error:
-			# Print exception
-			print("Error while creating users table", error)
+			logging.error("Error while creating users table", error)
 		finally:
 			# Close the connection object
 			conn.commit()
@@ -39,6 +40,7 @@ def create_table(creation_query):
 	finally:
 		# Since we do not have to do anything here we will pass
 		pass
+
 
 def populate_users(userID,file,name):
 	try:
@@ -56,7 +58,7 @@ def populate_users(userID,file,name):
 			# Commit the changes to the database
 			conn.commit()
 		except Exception as error:
-			print("Error while inserting data in users table", error)
+			logging.error("Error while inserting data in users table", error)
 		finally:
 			# Close the connection object
 			conn.close()
@@ -78,7 +80,7 @@ def populate_identification_record(userID, time, is_identified, valid_till):
 			# Commit the changes to the database
 			conn.commit()
 		except Exception as error:
-			print("Error while inserting data in users table", error)
+			logging.error("Error while inserting data in users table", error)
 		finally:
 			# Close the connection object
 			conn.close()
@@ -86,6 +88,7 @@ def populate_identification_record(userID, time, is_identified, valid_till):
 		# Since we do not have to do
 		# anything here we will pass
 		pass
+
 
 # Call the create table method
 def insert_table_data(id, blob, name):
@@ -112,7 +115,7 @@ def fetch_table_data_in_tuples(name='', query=None):
 			records = cursor.fetchall()
 
 		except Exception as error:
-			print("Error while inserting data in users table", error)
+			logging.error("Error while inserting data in users table", error)
 		finally:
 			# Close the connection object
 			conn.close()
@@ -141,7 +144,7 @@ def update_table(query):
 	try:
 		cursor.execute(query)
 	except Exception as error:
-		print("Error while updating data in table", error)
+		logging.error("Error while updating data in table", error)
 	finally:
 		# Close the connection object
 		conn.commit()

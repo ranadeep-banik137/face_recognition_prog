@@ -1,11 +1,17 @@
 # from modules.face_identifier2 import encode_face
-from modules.face_identifier import encode_face
+import logging
+import os
+from modules.face_identifier import encode_face, delete_similar_images
 from modules.database import insert_table_data, fetch_table_data_in_tuples
 from modules.data_reader import read_file, convertToBinaryData
 
 
 def run_app():
     encode_face(fetch_table_data_in_tuples())
+
+
+def set_log_level():
+    logging.getLogger().setLevel(os.getenv('LOG_LEVEL').upper() if os.getenv('LOG_LEVEL') is not None else None or 'INFO')
 
 
 def populate_database_with_local_config():
@@ -19,4 +25,5 @@ def populate_database_with_local_config():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     populate_database_with_local_config()
+    set_log_level()
     run_app()
